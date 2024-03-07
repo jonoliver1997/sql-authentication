@@ -1,14 +1,52 @@
 --Create the users table in local sql server:
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
-  `password` VARCHAR(255) NOT NULL,
-  `account_type` ENUM('User', 'Business') NOT NULL,
-  `mobile_phone_number` VARCHAR(20),
-  `business_name` VARCHAR(255),
-  `business_website` VARCHAR(255)
+CREATE TABLE IF NOT EXISTS users (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  account_type ENUM('User', 'Business') NOT NULL,
+  mobile_phone_number VARCHAR(20),
+  business_name VARCHAR(255),
+  business_website VARCHAR(255)
 );
+
+CREATE TABLE IF NOT EXISTS 'articles' (
+    article_id INT AUTO_INCREMENT PRIMARY KEY,
+    source_url VARCHAR(255),
+    publisher ENUM('Oakdale Leader', 'Riverbank News', 'Modesto Bee', 'Tracy Press', 'Ripon News', 'Turlock Journal'),
+    headline VARCHAR(255),
+    subheading VARCHAR(255),
+    author VARCHAR(255),
+    publish_date DATETIME,
+    content TEXT
+);
+
+CREATE TABLE images (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT,
+    FOREIGN KEY (article_id) REFERENCES articles(article_id),
+    url VARCHAR(255),
+    alt_description VARCHAR(255)
+);
+
+-- Create the categories table
+CREATE TABLE IF NOT EXISTS categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE
+);
+
+-- Insert categories
+INSERT INTO categories (name) VALUES ('Breaking News'), ('Local News'), ('Crime'), ('Government'), ('Education');
+
+-- Create the article_categories table to manage the many-to-many relationship
+CREATE TABLE IF NOT EXISTS article_categories (
+    article_id INT,
+    category_id INT,
+    FOREIGN KEY (article_id) REFERENCES articles(article_id),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    PRIMARY KEY (article_id, category_id)
+);
+
 
 -- dummy data
 
